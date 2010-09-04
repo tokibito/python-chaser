@@ -1,7 +1,7 @@
 from nullpochaser.chasers import CHaser
 from nullpochaser.const import TYPE_ENEMY
 
-class SilentChaser(CHaser):
+class SilentCHaser(CHaser):
     def run(self, info):
         if info[1] == TYPE_ENEMY:
             self.putUp()
@@ -13,3 +13,5 @@ class SilentChaser(CHaser):
             self.putDown()
         else:
             self.searchLeft()
+        print 'turn: %d, map size: %d x %d' % (self.turn, self.map.width, self.map.height)
+        print self.map.displayText()

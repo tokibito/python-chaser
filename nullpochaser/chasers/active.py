@@ -11,7 +11,7 @@ WALK_DOWN = 4
 
 class ActiveCHaser(CHaser):
     def safe_walk(self, info, direction):
-        # •Ç‚ª‚È‚¯‚ê‚Îw’è•ûŒü‚Öi‚Ş
+        # å£ãŒãªã‘ã‚Œã°æŒ‡å®šæ–¹å‘ã¸é€²ã‚€
         if direction == WALK_UP:
             if info[1] == TYPE_BLOCK:
                 return False
@@ -30,7 +30,7 @@ class ActiveCHaser(CHaser):
             return self.walkDown()
 
     def run(self, info):
-        # Å—Dæ:‰¡‚É‚¢‚½‚çƒuƒƒbƒN’u‚­
+        # æœ€å„ªå…ˆ:æ¨ªã«ã„ãŸã‚‰ãƒ–ãƒ­ãƒƒã‚¯ç½®ã
         if info[1] == TYPE_ENEMY:
             self.putUp()
         elif info[3] == TYPE_ENEMY:
@@ -40,8 +40,8 @@ class ActiveCHaser(CHaser):
         elif info[7] == TYPE_ENEMY:
             self.putDown()
         else:
-            # ƒ‰ƒ“ƒ_ƒ€‚Å•Ç‚Ì‚È‚¢•ûŒü‚Ö
-            # 1: ã, 2: ¶, 3: ‰E, 4: ‰º
+            # ãƒ©ãƒ³ãƒ€ãƒ ã§å£ã®ãªã„æ–¹å‘ã¸
+            # 1: ä¸Š, 2: å·¦, 3: å³, 4: ä¸‹
             while True:
                 val = random.randint(1, 4)
                 result = self.safe_walk(info, val)

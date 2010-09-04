@@ -39,6 +39,21 @@ class CHaser(object):
             raise ConnectionCloseSignal
         return info[1:]
 
+    def _update_map_normal(self, info):
+        """
+        通常の周囲8マスの情報でマップを更新
+        """
+        def _update(cell_y, line_info):
+            for idx, celltype in enumerate(line_info):
+                cell_x = self.x - 1 + idx
+                self.map.updateCell(position=(cell_x, cell_y), celltype=celltype, turn=self.turn)
+        # 1列目
+        _update(self.y + 1, info[:3])
+        # 2列目
+        _update(self.y, info[3:6])
+        # 3列目
+        _update(self.y - 1, info[6:9])
+
     ################
     # 補助コマンド
     ################
@@ -47,7 +62,9 @@ class CHaser(object):
 
     def getReady(self):
         self.command('gr')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def turnEnd(self):
         self.command('#')
@@ -58,22 +75,30 @@ class CHaser(object):
     def walkRight(self):
         self.command('wr')
         self.x += 1
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def walkLeft(self):
         self.command('wl')
         self.x -= 1
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def walkUp(self):
         self.command('wu')
         self.y += 1
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def walkDown(self):
         self.command('wd')
         self.y -= 1
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     ################
     # 広範囲探索
@@ -118,19 +143,27 @@ class CHaser(object):
     ################
     def putRight(self):
         self.command('pr')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def putLeft(self):
         self.command('pl')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def putUp(self):
         self.command('pu')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def putDown(self):
         self.command('pd')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_normal(info)
+        return info
 
     def getPos(self):
         """
@@ -154,6 +187,8 @@ class CHaser(object):
                         continue
                     # getReadyして周囲の情報を取得
                     info = self.getReady()
+                    # ターン情報更新
+                    self.turn += 1
                     # ユーザ定義の記述ポイントへ
                     # マップ情報のみ渡す
                     self.run(info)
