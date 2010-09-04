@@ -31,4 +31,4 @@ class SilentCHaser(CHaser):
             else:
                 self.lookDown()
         print 'turn: %d, map size: %d x %d' % (self.turn, self.map.width, self.map.height)
-        print self.map.displayText()
+        print self.map.displayText(position_self=self.position)

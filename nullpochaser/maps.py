@@ -124,14 +124,14 @@ class CHaserMap(object):
         else:
             cell.update(celltype, turn)
 
-    def displayText(self, gt_turn=None):
+    def displayText(self, gt_turn=None, position_self=None):
         """
         文字列表現でマップを返す
         X: 壁
         E: 敵
         *: アイテム
-        空白: 床
-        #: 情報なし
+        _: 床
+        空白: 情報なし
         """
         # マップの上下左右取得
         l, r, u, d = self.getLeft(), self.getRight(), self.getUp(), self.getDown()
@@ -139,6 +139,9 @@ class CHaserMap(object):
         # 左上から生成
         for y in reversed(range(d, u + 1)):
             for x in range(l, r + 1):
+                if (x, y) == position_self:
+                    text += '@'
+                    continue
                 if (x, y) == (0, 0):
                     text += 'S'
                     continue
