@@ -1,0 +1,1 @@
+from nullpochaser.chasers.base import CHaser
