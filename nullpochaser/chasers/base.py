@@ -1,6 +1,7 @@
 # coding: utf-8
 import logging
 
+from nullpochaser.const import *
 from nullpochaser.utils import strarr_to_intarr
 from nullpochaser.maps import CHaserMap
 
@@ -54,6 +55,63 @@ class CHaser(object):
         # 3列目
         _update(self.y - 1, info[6:9])
 
+    def _update_map_look(self, info, direction):
+        """
+        lookコマンドの情報でマップを更新
+        """
+        def _update(func_cell_x, func_cell_y, line_info):
+            for idx, celltype in enumerate(line_info):
+                cell_x = func_cell_x(idx)
+                cell_y = func_cell_y(idx)
+                self.map.updateCell(position=(cell_x, cell_y), celltype=celltype, turn=self.turn)
+        if direction == LEFT:
+            # 1列目
+            _update(lambda idx: self.x - 3 + idx, lambda idx: self.y + 1, info[:3])
+            # 2列目
+            _update(lambda idx: self.x - 3 + idx, lambda idx: self.y, info[3:6])
+            # 3列目
+            _update(lambda idx: self.x - 3 + idx, lambda idx: self.y - 1, info[6:9])
+        elif direction == RIGHT:
+            # 1列目
+            _update(lambda idx: self.x + 1 + idx, lambda idx: self.y + 1, info[:3])
+            # 2列目
+            _update(lambda idx: self.x + 1 + idx, lambda idx: self.y, info[3:6])
+            # 3列目
+            _update(lambda idx: self.x + 1 + idx, lambda idx: self.y - 1, info[6:9])
+        elif direction == UP:
+            # 1列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y + 3, info[:3])
+            # 2列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y + 2, info[3:6])
+            # 3列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y + 1, info[6:9])
+        elif direction == DOWN:
+            # 1列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y - 3, info[:3])
+            # 2列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y - 2, info[3:6])
+            # 3列目
+            _update(lambda idx: self.x - 1 + idx, lambda idx: self.y - 1, info[6:9])
+
+    def _update_map_search(self, info, direction):
+        """
+        searchコマンドの情報でマップを更新
+        direction: 方向
+        """
+        def _update(func_cell_x, func_cell_y):
+            for idx, celltype in enumerate(info):
+                cell_x = func_cell_x(idx)
+                cell_y = func_cell_y(idx)
+                self.map.updateCell(position=(cell_x, cell_y), celltype=celltype, turn=self.turn)
+        if direction == LEFT:
+            _update(lambda idx: self.x - 1 - idx, lambda idx: self.y)
+        elif direction == RIGHT:
+            _update(lambda idx: self.x + 1 + idx, lambda idx: self.y)
+        elif direction == UP:
+            _update(lambda idx: self.x, lambda idx: self.y + 1 + idx)
+        elif direction == DOWN:
+            _update(lambda idx: self.x, lambda idx: self.y - 1 - idx)
+
     ################
     # 補助コマンド
     ################
@@ -105,38 +163,54 @@ class CHaser(object):
     ################
     def lookRight(self):
         self.command('lr')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_look(info, RIGHT)
+        return info
 
     def lookLeft(self):
         self.command('ll')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_look(info, LEFT)
+        return info
 
     def lookUp(self):
         self.command('lu')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_look(info, UP)
+        return info
 
     def lookDown(self):
         self.command('ld')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_look(info, DOWN)
+        return info
 
     ################
     # 前方探索
     ################
     def searchRight(self):
         self.command('sr')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_search(info, RIGHT)
+        return info
 
     def searchLeft(self):
         self.command('sl')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_search(info, LEFT)
+        return info
 
     def searchUp(self):
         self.command('su')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_search(info, UP)
+        return info
 
     def searchDown(self):
         self.command('sd')
-        return self.receive_info()
+        info = self.receive_info()
+        self._update_map_search(info, DOWN)
+        return info
 
     ################
     # ブロック設置

@@ -139,9 +139,12 @@ class CHaserMap(object):
         # 左上から生成
         for y in reversed(range(d, u + 1)):
             for x in range(l, r + 1):
+                if (x, y) == (0, 0):
+                    text += 'S'
+                    continue
                 cell = self.getCell((x, y), gt_turn=gt_turn)
                 if not cell:
-                    text += '?'
+                    text += ' '
                 elif cell.is_floor:
                     text += '_'
                 elif cell.is_enemy:
