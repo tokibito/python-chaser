@@ -1,3 +1,5 @@
+GAME_FINISHED = 0  # ゲーム終了
+
 TYPE_FLOOR = 0
 TYPE_ENEMY = 1
 TYPE_BLOCK = 2
