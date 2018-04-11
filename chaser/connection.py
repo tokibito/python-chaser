@@ -14,6 +14,7 @@ class Connection:
 
     def connect(self):
         if self.socket is None:
+            self.socket = self.make_socket()
             self.socket.connect((self.host, self.port))
 
     def send(self, packet):
