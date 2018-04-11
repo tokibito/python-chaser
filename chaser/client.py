@@ -51,7 +51,6 @@ class Client:
         """
         ユーザ名を送信します
         """
-        # TODO: UTF-8でいいの?
         return self.send_command(self._username.encode('utf-8'))
 
     def get_ready(self):
@@ -67,7 +66,7 @@ class Client:
         """
         ターン終了
         """
-        self.command(const.TURN_END)
+        self.send_command(const.TURN_END)
 
     def walk_right(self):
         """右に移動
