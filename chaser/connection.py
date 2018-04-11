@@ -10,7 +10,7 @@ class Connection:
         self.socket = None
 
     def make_socket(self):
-        return socket.socket(socket.AF_INET, socket.SOCK_STREA)
+        return socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
         self.socket.connect((self.host, self.port))
