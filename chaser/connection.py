@@ -13,7 +13,8 @@ class Connection:
         return socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
-        self.socket.connect((self.host, self.port))
+        if self.socket is None:
+            self.socket.connect((self.host, self.port))
 
     def send(self, packet):
         return self.socket.send(packet)
