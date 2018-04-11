@@ -1,62 +1,37 @@
-# coding: utf-8
+import os
 from setuptools import setup, find_packages
 
-DOC = """
-================
-nullpobug.chaser
-================
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-動作環境
-========
 
-* Python2.7
+def read(filename):
+    fullpath = os.path.join(current_dir, filename)
+    try:
+        with open(fullpath) as f:
+            return f.read()
+    except Exception:
+        return ""
 
-インストール
-============
-
-easy_installやpipでインストールしてください。
-
-::
-
-   $ pip install nullpobug.chaser
-
-簡単な使い方
-============
-
-動かずサーチだけ実行するCHaserクラスを作ってみます。
-
-**my_chaser.py**:
-
-::
-
-   from nullpochaser.chasers.silent import SilentCHaser
-
-   class MyCHaser(SilentCHaser):
-       pass
-
-これを動かすには次のようにコマンドを実行します。
-
-::
-
-   $ python -m nullpochaser.main --chaser=my_chaser.MyCHaser
-
-``-p`` オプションでポート番号を指定できます。他のオプションを確認するには、 ``--help`` オプションを指定してください。
-
-::
-
-   $ python -m nullpochaser.main --help
-
-詳しくはソースを読んでください。
-"""
 
 setup(
-    name='nullpobug.chaser',
+    name='python-chaser',
     version='0.1',
-    description='CHaser 2012 client library for Python',
-    long_description=DOC,
-    author='Shinya Okano',
-    classifiers=[
-        'Programming Language :: Python :: 2.7',
-    ],
+    description="",
+    long_description=read('README.rst'),
     packages=find_packages(),
-)
+    author='Shinya Okano',
+    author_email='tokibito@gmail.com',
+    url='https://github.com/tokibito/python-chaser',
+    install_requires=[],
+    extras_require={
+        "dev": [
+            "flake8",
+            "pytest",
+            "wheel",
+        ],
+    },
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Programming Language :: Python :: 3.6',
+        'License :: OSI Approved :: MIT License',
+    ])
