@@ -17,6 +17,7 @@ class Client:
     def connect(self):
         if self.connection is None:
             self.connection = Connection(self.host, self.port)
+            self.connection.connect()
 
     def send_command(self, command):
         if self.connection is None:
