@@ -1,10 +1,15 @@
-GAME_FINISHED = 0  # ゲーム終了
+# マップパーツ
+TYPE_FLOOR = 0  # マップパーツ:床
+TYPE_CHARACTER = 1  # マップパーツ:キャラクタ
+TYPE_BLOCK = 2  # マップパーツ:ブロック
+TYPE_ITEM = 3  # マップパーツ:アイテム
 
-TYPE_FLOOR = 0
-TYPE_ENEMY = 1
-TYPE_BLOCK = 2
-TYPE_ITEM = 3
+# 制御情報
+GAME_FINISHED = b'0'  # 制御情報:ゲーム終了
+TURN_START = b'@'  # 制御情報:ターン開始
+TURN_END = b'#'  # 制御情報:ターン終了
 
+# 方向
 UP_LEFT = 1
 UP = 2
 UP_RIGHT = 3

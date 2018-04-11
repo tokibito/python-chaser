@@ -1,6 +1,5 @@
 import logging
 from . import const
-from . import exceptions
 from .connection import Connection
 
 logger = logging.getLogger(__name__)
@@ -34,19 +33,24 @@ class Client:
 
     def receive(self):
         """
-        receiveした後マップ情報をintのlistで返す
-        終了フラグがあった場合はGameFinished例外を発生させます
+        データをサーバーから受信します
+
+        :returns (byte, list(int) or None): 制御情報とマップ情報
         """
         buffer = self._receive()
-        info = list(map(int, buffer.decode('ascii')))
-        if info[0] == const.GAME_FINISHED:
-            raise exceptions.GameFinished
-        return info
+        control = buffer[0]
+        # 制御情報のみの場合
+        if control in [const.GAME_FINISHED, const.TURN_START]:
+            return control, None
+        # 制御情報 + マップ情報の場合
+        info = list(map(int, buffer[1:].decode('ascii')))
+        return control, info
 
     def username(self):
         """
         ユーザ名を送信します
         """
+        # TODO: UTF-8でいいの?
         return self.send_command(self._username.encode('utf-8'))
 
     def get_ready(self):
@@ -62,7 +66,7 @@ class Client:
         """
         ターン終了
         """
-        self.command(b'#')
+        self.command(const.TURN_END)
 
     def walk_right(self):
         """右に移動

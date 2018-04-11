@@ -1,6 +1,6 @@
 import socket
 
-BUFFER_SIZE = 4096
+BUFFER_SIZE = 512
 
 
 class Connection:
