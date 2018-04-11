@@ -1,9 +1,0 @@
-syntax: glob
-*.pyc
-*.swp
-*.orig
-
-syntax: regexp
-^dist/
-^build/
-^nullpobug.chaser.egg-info/
