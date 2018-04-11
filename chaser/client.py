@@ -39,7 +39,7 @@ class Client:
         :returns (byte, list(int) or None): 制御情報とマップ情報
         """
         buffer = self._receive()
-        control = buffer[0]
+        control = buffer[:1]
         # 制御情報のみの場合
         if control in [const.GAME_FINISHED, const.TURN_START]:
             return control, None
