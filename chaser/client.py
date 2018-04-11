@@ -22,7 +22,7 @@ class Client:
         if self.connection is None:
             self.connect()
         logging.info('send command [%s]', command)
-        return self.connection.send('{}\r\n'.format(command))
+        return self.connection.send(command + b'\r\n')
 
     def _receive(self):
         if self.connection is None:
