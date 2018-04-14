@@ -14,7 +14,7 @@ def read(filename):
 
 
 setup(
-    name='python-chaser',
+    name='chaser',
     version='0.1',
     description="",
     long_description=read('README.rst'),

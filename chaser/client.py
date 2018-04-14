@@ -8,22 +8,26 @@ logger = logging.getLogger(__name__)
 class Client:
     """コマンド送受信クライアント
     """
-    def __init__(self, host, port, username, connection=None):
+    command_end = b'\n'
+
+    def __init__(self, host, port, team, connection=None):
         self.host = host
         self.port = port
         self.connection = None
-        self._username = username
+        self._team = team
 
     def connect(self):
         if self.connection is None:
             self.connection = Connection(self.host, self.port)
             self.connection.connect()
+            # 接続直後にチーム名を送信
+            self.send_team()
 
     def send_command(self, command):
         if self.connection is None:
             self.connect()
         logging.info('send command [%s]', command)
-        return self.connection.send(command + b'\r\n')
+        return self.connection.send(command + self.__class__.command_end)
 
     def _receive(self):
         if self.connection is None:
@@ -47,11 +51,11 @@ class Client:
         info = list(map(int, buffer[1:].decode('ascii')))
         return control, info
 
-    def username(self):
+    def send_team(self):
         """
-        ユーザ名を送信します
+        チーム名を送信します
         """
-        return self.send_command(self._username.encode('utf-8'))
+        return self.connection.send(self._team.encode('utf-8'))
 
     def get_ready(self):
         """
