@@ -17,19 +17,26 @@ class Client:
         self._team = team
 
     def connect(self):
-        if self.connection is None:
-            self.connection = Connection(self.host, self.port)
-            self.connection.connect()
-            # 接続直後にチーム名を送信
-            self.send_team()
+        """ホストに接続します
+        """
+        self.connection = Connection(self.host, self.port)
+        self.connection.connect()
+        # 接続直後にチーム名を送信
+        self.send_team()
 
     def send_command(self, command):
+        """コマンドを送信します
+        """
+        # 未接続の場合は接続します
         if self.connection is None:
             self.connect()
         logging.info('send command [%s]', command)
         return self.connection.send(command + self.__class__.command_end)
 
     def _receive(self):
+        """データ受信の内部処理
+        """
+        # 未接続の場合は接続します
         if self.connection is None:
             self.connect()
         buffer = self.connection.recv().strip()
