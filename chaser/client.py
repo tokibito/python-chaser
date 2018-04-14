@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 class Client:
     """コマンド送受信クライアント
     """
-    command_end = b'\n'
+    command_end = b'\r\n'
 
     def __init__(self, host, port, team, connection=None):
         self.host = host

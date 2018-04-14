@@ -13,7 +13,7 @@ PyPIにアップロードしているので、インストールにはpipコマ�
 
    (venv)$ pip install chaser
 
-使い方は、 `example/simple.py` を参考にしてみてください。
+使い方は、 `example/simple.py` `example/mapper.py` を参考にしてみてください。
 
 ライブラリの開発
 ================

@@ -112,11 +112,25 @@ class Map(dict):
         else:
             self[position] = MapCell(celltype, turn)
 
-    def __str__(self):
+    def add_surround(self, self_position, info, turn):
+        """周囲情報をマップに追加します
+        """
+        cursor = 0
+        left = self_position[0] - 1
+        top = self_position[1] + 1
+        for y_increment in [0, 1, 2]:
+            for x_increment in [0, 1, 2]:
+                position = (left + x_increment, top - y_increment)
+                self.add(position, info[cursor], turn)
+                cursor += 1
+
+    def as_text(self, self_postion=None):
         """
         文字列表現でマップを返す
+
         X: 壁
         E: 敵
+        #: 自キャラクター(self_postionを指定した場合)
         *: アイテム
         _: 床
         空白: 情報なし
@@ -129,17 +143,21 @@ class Map(dict):
             for x_increment in range(self.width):
                 position = (left + x_increment, top - y_increment)
                 cell = self.get(position)
-                if cell is None:
+                if position == self_postion:
+                    out = "#"
+                elif cell is None:
                     out = " "
-                else:
-                    if cell.is_floor():
-                        out = "_"
-                    elif cell.is_character():
-                        out = "E"
-                    elif cell.is_block():
-                        out = "X"
-                    elif cell.is_item():
-                        out = "*"
+                elif cell.is_floor():
+                    out = "_"
+                elif cell.is_character():
+                    out = "E"
+                elif cell.is_block():
+                    out = "X"
+                elif cell.is_item():
+                    out = "*"
                 line += out
             lines.append(line)
         return "\n".join(lines)
+
+    def __str__(self):
+        return self.as_text()
