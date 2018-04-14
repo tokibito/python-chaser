@@ -1,15 +1,17 @@
-# coding: utf-8
-from nullpochaser.const import TYPE_FLOOR, TYPE_ENEMY, TYPE_BLOCK, TYPE_ITEM
+from . import const
 
-# 履歴は多すぎても多分意味ないので
-MAX_HISTORY_COUNT = 5
 
-class MapCell(object):
+class MapCell:
     """
     マップの1セルの情報
-    いつ更新されたかと更新履歴を持つ
+
+    更新履歴を持ちます
     """
     def __init__(self, celltype, turn):
+        """
+        :param celltype: セルの種別
+        :param turn: 何ターン目か
+        """
         self._celltype = celltype
         self._turn = turn
         self.history = []
@@ -22,109 +24,95 @@ class MapCell(object):
     def turn(self):
         return self._turn
 
-    @property
     def is_floor(self):
-        return self.celltype == TYPE_FLOOR
+        """マップパーツ: 床
+        """
+        return self._celltype == const.TYPE_FLOOR
 
-    @property
-    def is_enemy(self):
-        return self.celltype == TYPE_ENEMY
+    def is_character(self):
+        """マップパーツ: キャラクタ
+        """
+        return self._celltype == const.TYPE_CHARACTER
 
-    @property
     def is_block(self):
-        return self.celltype == TYPE_BLOCK
+        """マップパーツ: ブロック
+        """
+        return self._celltype == const.TYPE_BLOCK
 
-    @property
     def is_item(self):
-        return self.celltype == TYPE_ITEM
+        """マップパーツ: アイテム
+        """
+        return self._celltype == const.TYPE_ITEM
 
     def update(self, celltype, turn):
-        self.history.append((self.celltype, self.turn))
-        # 最大数を超えないように切り詰め
-        self.history = self.history[len(self.history) - MAX_HISTORY_COUNT:]
+        """セルの情報を更新
+        """
+        # 現在のセル情報を履歴へ追加
+        self.history.append((self._celltype, self.turn))
+        # 新しい情報に更新
         self._celltype = celltype
         self._turn = turn
 
-class CHaserMap(object):
+
+class Map(dict):
     """
-    フィールドマップ
+    マップ情報を管理するためのクラス
     """
-    def __init__(self):
-        self.data = {
-            (0, 0): TYPE_FLOOR,
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        # 開始時、(0, 0)床
+        self[(0, 0)] = MapCell(const.TYPE_FLOOR, 0)
 
-    def getXList(self):
+    @property
+    def top(self):
+        """保持している座標のY方向の最大値(上方)
         """
-        マッピング済みのX座標のリストを返す
-        """
-        return sorted([position[0] for position in self.data])
+        return max([p[1] for p in self])
 
-    def getYList(self):
+    @property
+    def bottom(self):
+        """保持している座標のY方向の最小値(下方)
         """
-        マッピング済みのY座標のリストを返す
-        """
-        return sorted([position[1] for position in self.data])
+        return min([p[1] for p in self])
 
-    def getLeft(self):
+    @property
+    def left(self):
+        """保持している座標のX方向の最小値(左方)
         """
-        一番左のX座標
-        """
-        return min(self.getXList())
+        return min([p[0] for p in self])
 
-    def getRight(self):
+    @property
+    def right(self):
+        """保持している座標のX方向の最大値(右方)
         """
-        一番右のX座標
-        """
-        return max(self.getXList())
+        return max([p[0] for p in self])
 
-    def getUp(self):
-        """
-        一番上のY座標
-        """
-        return max(self.getYList())
+    @property
+    def width(self):
+        """マップの幅を返します
 
-    def getDown(self):
+        保持している座標のX方向の範囲
         """
-        一番下のY座標
-        """
-        return min(self.getYList())
+        return self.right - self.left + 1
 
-    def getWidth(self):
-        """
-        マップの幅
-        """
-        return self.getRight() - self.getLeft() + 1
-    width = property(getWidth)
+    @property
+    def height(self):
+        """マップの高さを返します
 
-    def getHeight(self):
+        保持している座標のY方向の範囲
         """
-        マップの高さ
-        """
-        return self.getUp() - self.getDown() + 1
-    height = property(getHeight)
+        return self.top - self.bottom + 1
 
-    def getCell(self, position, gt_turn=None):
+    def add(self, position, celltype, turn):
+        """マップに情報を追加します
         """
-        指定位置の情報を取得
-        gt_turnを指定すると指定ターン以前の場合はNoneを返す
-        """
-        cell = self.data.get(position)
-        if gt_turn and cell and cell.turn < gt_turn:
-            return
-        return cell
-
-    def updateCell(self, position, celltype, turn):
-        """
-        指定位置の情報を更新
-        """
-        cell = self.getCell(position)
-        if not cell:
-            self.data[position] = MapCell(celltype, turn)
-        else:
+        if position in self:
+            cell = self[position]
             cell.update(celltype, turn)
+        else:
+            self[position] = MapCell(celltype, turn)
 
-    def displayText(self, gt_turn=None, position_self=None):
+    def __str__(self):
         """
         文字列表現でマップを返す
         X: 壁
@@ -133,28 +121,25 @@ class CHaserMap(object):
         _: 床
         空白: 情報なし
         """
-        # マップの上下左右取得
-        l, r, u, d = self.getLeft(), self.getRight(), self.getUp(), self.getDown()
-        text = ''
-        # 左上から生成
-        for y in reversed(range(d, u + 1)):
-            for x in range(l, r + 1):
-                if (x, y) == position_self:
-                    text += '@'
-                    continue
-                if (x, y) == (0, 0):
-                    text += 'S'
-                    continue
-                cell = self.getCell((x, y), gt_turn=gt_turn)
-                if not cell:
-                    text += ' '
-                elif cell.is_floor:
-                    text += '_'
-                elif cell.is_enemy:
-                    text += 'E'
-                elif cell.is_block:
-                    text += 'X'
-                elif cell.is_item:
-                    text += '*'
-            text += '\n'
-        return text
+        lines = []
+        top = self.top
+        left = self.left
+        for y_increment in range(self.height):
+            line = ""
+            for x_increment in range(self.width):
+                position = (left + x_increment, top - y_increment)
+                cell = self.get(position)
+                if cell is None:
+                    out = " "
+                else:
+                    if cell.is_floor():
+                        out = "_"
+                    elif cell.is_character():
+                        out = "E"
+                    elif cell.is_block():
+                        out = "X"
+                    elif cell.is_item():
+                        out = "*"
+                line += out
+            lines.append(line)
+        return "\n".join(lines)
