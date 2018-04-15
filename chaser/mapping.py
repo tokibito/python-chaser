@@ -124,13 +124,101 @@ class Map(dict):
                 self.add(position, info[cursor], turn)
                 cursor += 1
 
-    def as_text(self, self_postion=None):
+    def add_search_up(self, self_position, info, turn):
+        """search結果をマップに追加します(上方)
+        """
+        left = self_position[0]
+        bottom = self_position[1] + 1
+        for y_increment in range(9):
+            # 左固定, 下から上へ
+            position = (left, bottom + y_increment)
+            self.add(position, info[y_increment], turn)
+
+    def add_search_down(self, self_position, info, turn):
+        """search結果をマップに追加します(下方)
+        """
+        left = self_position[0]
+        top = self_position[1] - 1
+        for y_increment in range(9):
+            # 左固定, 上から下へ
+            position = (left, top - y_increment)
+            self.add(position, info[y_increment], turn)
+
+    def add_search_left(self, self_position, info, turn):
+        """search結果をマップに追加します(左方)
+        """
+        right = self_position[0] - 1
+        top = self_position[1]
+        for x_increment in range(9):
+            # 上固定, 右から左へ
+            position = (right - x_increment, top)
+            self.add(position, info[x_increment], turn)
+
+    def add_search_right(self, self_position, info, turn):
+        """search結果をマップに追加します(右方)
+        """
+        left = self_position[0] + 1
+        top = self_position[1]
+        for x_increment in range(9):
+            # 上固定, 左から右へ
+            position = (left + x_increment, top)
+            self.add(position, info[x_increment], turn)
+
+    def add_look_up(self, self_position, info, turn):
+        """look結果をマップに追加します(上方)
+        """
+        cursor = 0
+        left = self_position[0] - 1
+        top = self_position[1] + 3
+        for y_increment in [0, 1, 2]:
+            for x_increment in [0, 1, 2]:
+                position = (left + x_increment, top - y_increment)
+                self.add(position, info[cursor], turn)
+                cursor += 1
+
+    def add_look_down(self, self_position, info, turn):
+        """look結果をマップに追加します(下方)
+        """
+        cursor = 0
+        left = self_position[0] - 1
+        top = self_position[1] - 1
+        for y_increment in [0, 1, 2]:
+            for x_increment in [0, 1, 2]:
+                position = (left + x_increment, top - y_increment)
+                self.add(position, info[cursor], turn)
+                cursor += 1
+
+    def add_look_left(self, self_position, info, turn):
+        """look結果をマップに追加します(左方)
+        """
+        cursor = 0
+        left = self_position[0] - 3
+        top = self_position[1] + 1
+        for y_increment in [0, 1, 2]:
+            for x_increment in [0, 1, 2]:
+                position = (left + x_increment, top - y_increment)
+                self.add(position, info[cursor], turn)
+                cursor += 1
+
+    def add_look_right(self, self_position, info, turn):
+        """look結果をマップに追加します(右方)
+        """
+        cursor = 0
+        left = self_position[0] + 1
+        top = self_position[1] + 1
+        for y_increment in [0, 1, 2]:
+            for x_increment in [0, 1, 2]:
+                position = (left + x_increment, top - y_increment)
+                self.add(position, info[cursor], turn)
+                cursor += 1
+
+    def as_text(self, self_position=None):
         """
         文字列表現でマップを返す
 
         X: 壁
         E: 敵
-        #: 自キャラクター(self_postionを指定した場合)
+        #: 自キャラクター(self_positionを指定した場合)
         *: アイテム
         _: 床
         空白: 情報なし
@@ -143,7 +231,7 @@ class Map(dict):
             for x_increment in range(self.width):
                 position = (left + x_increment, top - y_increment)
                 cell = self.get(position)
-                if position == self_postion:
+                if position == self_position:
                     out = "#"
                 elif cell is None:
                     out = " "

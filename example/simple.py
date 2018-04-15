@@ -35,6 +35,7 @@ def main():
         client.send_command(command.encode('ascii'))
         # マップ情報取得
         control, info = client.receive()
+        print(control, info)
         if control == const.GAME_FINISHED:
             break
         # ターン終了

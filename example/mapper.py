@@ -40,7 +40,11 @@ def main():
         print(map.as_text((x, y)))
         # コマンド入力
         command = input('command? >')
-        # 自キャラの位置を更新
+        # コマンド送信
+        client.send_command(command.encode('ascii'))
+        # マップ情報取得
+        control, info = client.receive()
+        # 自キャラの位置、マップを更新
         if command == 'wu':
             y += 1
         elif command == 'wd':
@@ -49,10 +53,23 @@ def main():
             x -= 1
         elif command == 'wr':
             x += 1
-        # コマンド送信
-        client.send_command(command.encode('ascii'))
-        # マップ情報取得
-        control, info = client.receive()
+        elif command == 'su':
+            map.add_search_up((x, y), info, turn)
+        elif command == 'sd':
+            map.add_search_down((x, y), info, turn)
+        elif command == 'sl':
+            map.add_search_left((x, y), info, turn)
+        elif command == 'sr':
+            map.add_search_right((x, y), info, turn)
+        elif command == 'lu':
+            map.add_look_up((x, y), info, turn)
+        elif command == 'ld':
+            map.add_look_down((x, y), info, turn)
+        elif command == 'll':
+            map.add_look_left((x, y), info, turn)
+        elif command == 'lr':
+            map.add_look_right((x, y), info, turn)
+        print(control, info)
         if control == const.GAME_FINISHED:
             break
         # ターン終了
