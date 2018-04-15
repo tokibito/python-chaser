@@ -1,0 +1,9 @@
+sudo: false
+language: python
+matrix:
+  include:
+    - python: '3.6'
+script:
+  - py.test tests
+install:
+  - pip install -e .[dev]
