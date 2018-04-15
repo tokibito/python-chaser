@@ -2,6 +2,8 @@
 python-chaser
 =============
 
+|build-status|
+
 CHaser client for Python
 
 ライブラリの利用
@@ -23,3 +25,6 @@ PyPIにアップロードしているので、インストールにはpipコマ�
 ::
 
    $ pip install -e .[dev]
+
+.. |build-status| image:: https://travis-ci.org/tokibito/python-chaser.svg?branch=master
+   :target: https://travis-ci.org/tokibito/python-chaser
