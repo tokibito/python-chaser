@@ -12,46 +12,38 @@ class MapCell:
         :param celltype: セルの種別
         :param turn: 何ターン目か
         """
-        self._celltype = celltype
-        self._turn = turn
+        self.celltype = celltype
+        self.turn = turn
         self.history = []
-
-    @property
-    def celltype(self):
-        return self._celltype
-
-    @property
-    def turn(self):
-        return self._turn
 
     def is_floor(self):
         """マップパーツ: 床
         """
-        return self._celltype == const.TYPE_FLOOR
+        return self.celltype == const.TYPE_FLOOR
 
     def is_character(self):
         """マップパーツ: キャラクタ
         """
-        return self._celltype == const.TYPE_CHARACTER
+        return self.celltype == const.TYPE_CHARACTER
 
     def is_block(self):
         """マップパーツ: ブロック
         """
-        return self._celltype == const.TYPE_BLOCK
+        return self.celltype == const.TYPE_BLOCK
 
     def is_item(self):
         """マップパーツ: アイテム
         """
-        return self._celltype == const.TYPE_ITEM
+        return self.celltype == const.TYPE_ITEM
 
     def update(self, celltype, turn):
         """セルの情報を更新
         """
         # 現在のセル情報を履歴へ追加
-        self.history.append((self._celltype, self.turn))
+        self.history.append((self.celltype, self.turn))
         # 新しい情報に更新
-        self._celltype = celltype
-        self._turn = turn
+        self.celltype = celltype
+        self.turn = turn
 
 
 class Map(dict):
