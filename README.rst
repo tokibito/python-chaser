@@ -2,7 +2,7 @@
 python-chaser
 =============
 
-|build-status|
+|build-status| |pypi|
 
 CHaser client for Python
 
@@ -28,3 +28,5 @@ PyPIにアップロードしているので、インストールにはpipコマ�
 
 .. |build-status| image:: https://travis-ci.org/tokibito/python-chaser.svg?branch=master
    :target: https://travis-ci.org/tokibito/python-chaser
+.. |pypi| image:: https://badge.fury.io/py/chaser.svg
+   :target: http://badge.fury.io/py/chaser
