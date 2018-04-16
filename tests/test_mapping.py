@@ -47,3 +47,23 @@ class TestMapCell:
         cell.update(const.TYPE_BLOCK, 2)
         assert cell.celltype == const.TYPE_BLOCK
         assert cell.history[0] == (const.TYPE_FLOOR, 1)
+
+
+class TestMap:
+    @pytest.fixture
+    def target(self):
+        from chaser.mapping import Map as target
+        return target
+
+    def test_str(self, target):
+        map = target()
+        actual = str(map)
+        expected = "_"
+        assert actual == expected
+
+    def test_add_surround(self, target):
+        map = target()
+        map.add_surround((0, 0), [0, 1, 2, 3, 0, 0, 0, 0, 0], 1)
+        actual = map.as_text((0, 0))
+        expected = "_EX\n*#_\n___"
+        assert actual == expected
